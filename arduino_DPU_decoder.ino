@@ -15,13 +15,12 @@ void loop() {
 // This function decodes the PDU data to ASCII character data.
 char decodePDU( char chunk[46], byte arrayLength )
 { 
-  byte pos;  // The position in the character array that we're decoding.
-  byte shift; // How many of the bits must be shifted over to the next byte. Since are are handling 8 bits but only need 7, we keep having one bit left over. Once there is a need to shift 7 bits, that means we have the extra 'bonus' character.
+  static byte pos = 0;  // The position in the character array that we're decoding.
+  static byte shift = 0; // How many of the bits must be shifted over to the next byte. Since are are handling 8 bits but only need 7, we keep having one bit left over. Once there is a need to shift 7 bits, that means we have the extra 'bonus' character.
   byte nextLeftOver; // The leftover bits from the current translation
   byte prevLeftOver; // The leftover bits from the previous translation.
   byte high_nibble, low_nibble; // Used to hold the decimal values of the two hexadecimal characters from the input string.
   byte value; // The high and low nibble combined form the original byte that needs to be translated.
-  byte endChar; // Hold the final translated character that is generated from the two original input hexadecimal characters.
 
   while( pos < arrayLength ){
 
@@ -51,11 +50,10 @@ char decodePDU( char chunk[46], byte arrayLength )
       bitWrite( nextLeftOver, j, bitRead(value,(7-shift) + j) ); 
     }
     
-    endChar = value; // Endchar will hold the final ASCII value.
-    endChar = endChar << shift; // Scoot everything over. The bits that get destroyed have already been safeguarded.    
-    endChar = endChar | prevLeftOver; // overlay the previous left over bits. This will create the final character.
-    bitWrite( endChar, 7, 0 ); // Force it to be a 7-bit character by turning the 8th bit to 0. 
-    Serial.print( (char) endChar);
+    value = value << shift; // Scoot everything over. The bits that get destroyed have already been safeguarded.    
+    value = value | prevLeftOver; // overlay the previous left over bits. This will create the final character.
+    bitWrite( value, 7, 0 ); // Force it to be a 7-bit character by turning the 8th bit to 0. 
+    Serial.print( (char) value);
 
     shift++;
     if( shift == 7 ){
