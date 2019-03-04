@@ -66,7 +66,7 @@ char decodePDU( char chunk[46], byte arrayLength )
   }
 }
 
-// This is a helper function. It turns a hex character (0 through F) into the actual decimal number it represents (0 through 16).
+// This is a helper function. It turns a hex character (0 through F) into the actual decimal number it represents (0 through 16). Thanks to Econjack for this: https://forum.arduino.cc/index.php?topic=307459.0
 byte hex_to_int(char c){
   byte first;
   byte second;
